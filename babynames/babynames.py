@@ -51,13 +51,19 @@ def extract_names(filename):
     ranks = re.findall(
         r'<tr align="right"><td>(\d+)</td><td>(\w+)</td><td>(\w+)</td>',
         file_as_one_string)
-    print ranks
+    rank_list = []
+    for tuple in ranks:
+        rank_list.append(tuple[1] + " " + tuple[0])
+        rank_list.append(tuple[2] + " " + tuple[0])
+    sorted_rank_list = sorted(rank_list, key=lambda tuple: tuple[0])
+    result.extend(sorted_rank_list)
 
     return result
+"""
+should impove this by: if a name appears more than once,
+store only the smallest rank for it
 
-print extract_names(sys.argv[1])
-
-sys.exit(0)
+"""
 
 
 def main():
@@ -79,7 +85,8 @@ def main():
     # +++your code here+++
     # For each filename, get the names, then either print the text output
     # or write it to a summary file
-    print extract_names(args[0])
-
+    result = extract_names(sys.argv[1])
+    text = '\n'.join(result) + '\n'
+    print text
 if __name__ == '__main__':
     main()
