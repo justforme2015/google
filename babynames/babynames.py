@@ -52,24 +52,29 @@ def extract_names(filename):
         r'<tr align="right"><td>(\d+)</td><td>(\w+)</td><td>(\w+)</td>',
         file_as_one_string)
     rank_list = []
-    for tuple in ranks:
-        rank_list.append(tuple[1] + " " + tuple[0])
-        rank_list.append(tuple[2] + " " + tuple[0])
-    sorted_rank_list = sorted(rank_list, key=lambda tuple: tuple[0])
-    result.extend(sorted_rank_list)
+    for rank in ranks:
+        rank_list.append((rank[1], rank[0]))
+        rank_list.append((rank[2], rank[0]))
+    sorted_rank_list = sorted(rank_list, key=lambda rank: rank[0])
+    filtered_rank_list = [sorted_rank_list[0]]
+    for rank_tuple in sorted_rank_list:
+        if rank_tuple[0] != filtered_rank_list[-1][0]:
+            filtered_rank_list.append(rank_tuple)
+        else:
+            if rank_tuple[1] < filtered_rank_list[-1][1]:
+                del filtered_rank_list[-1]
+                filtered_rank_list.append(rank_tuple)
+    for rank_tuple in filtered_rank_list:
+        result.append(rank_tuple[0] + " " + rank_tuple[1])
 
     return result
-"""
-should impove this by: if a name appears more than once,
-store only the smallest rank for it
-
-"""
 
 
 def main():
     # This command-line parsing code is provided.
     # Make a list of command line arguments, omitting the [0] element
     # which is the script itself.
+    sys.argv[1:] = ['baby1990.html']
     args = sys.argv[1:]
 
     if not args:
